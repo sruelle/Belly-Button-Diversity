@@ -12,7 +12,7 @@ function DrawBargraph(sampleId)
         var otu_labels = result.otu_labels;
         var sample_values = result.sample_values;
 
-        yticks = otu_ids.slice(o, 10).map(otuId => `OTU ${otuId}`).reverse();
+        yticks = otu_ids.slice(0, 10).map(otuId => `OTU ${otuId}`).reverse();
 
         var barData = {
             x: sample_values.slice(0,10).reverse(),
@@ -63,12 +63,12 @@ function InitDashboard()
         
         console.log(data);
 
-        var samplesNames = data.names;
+        var sampleNames = data.names;
 
-        samplesNames.forEach((sampleId) => {
+        sampleNames.forEach((sampleId) => {
             selector.append("option")
                 .text(sampleId)
-                .property("value", samplesNames);
+                .property("value", sampleId);
 
         });
 
