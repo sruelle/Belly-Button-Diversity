@@ -39,36 +39,53 @@ function DrawBubblechart(sampleId) {
 function ShowMetadata(sampleId) {
     console.log(`Calling ShowMetadata(${sampleId})`);
 
+}
+
+function DrawGauge(sampleId)
+{
+    console.log(`Calling DrawGauge($(sampleId))`);
 
 
 }
+
+
 
 function optionChanged(newSampleId) {
     console.log(`User selected ${newSampleId}`);
 
     DrawBubblechart(newSampleId);
     DrawBargraph(newSampleId);
+    DrawGauge(newSampleId);
     ShowMetadata(newSampleId);
 }
 
-function InitDashboard() {
+function InitDashboard()
+ {
     console.log("initlizing Dashboard");
 
+    var selector = d3.select(`#selDataset`);
 
     d3.json("samples.json").then(data => {
-        showOptions(data);
-        DrawBargraph(data.names[0])
+
+        console.log(data);
+
+        var sampleNames = data.names;
+
+        sampleNames.forEach((sampleId) => {
+            selector.append("option")
+                .text(sampleId)
+                .property("value", sampleId);
+        });
+
+        var sampleId = sampleNames[0];
+
+        DrawBargraph(sampleId)
+        DrawBubblechart(sampleId);
+        DrawGauge(saampleId);
+        ShowMetadata(sampleId);
+        
     });
 
-};
-
-function showOptions(data) {
-    var selector = d3.select("#selDataset");
-    data.names.forEach((name) => {
-        selector.append("option")
-            .text(name)
-            .property("value", name);
-    });
 }
 
 InitDashboard();
