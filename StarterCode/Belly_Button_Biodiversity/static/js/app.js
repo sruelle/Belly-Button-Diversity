@@ -33,22 +33,52 @@ function DrawBargraph(sampleId) {
 function DrawBubblechart(sampleId) {
     console.log(`Calling DrawBubblechart(${sampleId})`);
 
+    d3.json("samples.json").then(data=>{
+        var result = data.samples.filter(bu => bu.id == sampleId)[0];
+
+        var bubbleLayout = {
+            title: 'Bactera Cultures Per Sample',
+            margin: { t: 0 },
+            hovermode: 'closest',
+            xaxis: { title: 'OTU ID'},
+            margin: { t: 30 }
+        };
+
+        var bubbleData = [
+            {
+                x: result.otu_ids,
+                y: result.sample_values,
+                text: result.otu_labels,
+                mode: 'markers',
+                marker: {
+                    size: result.sample_values,
+                    color: result.otu_ids,
+                    colorscale: 'Earth'
+                }
+            }
+        ];
+
+        Plotly.newPlot('bubble', bubbleData, bubbleLayout );
+    })
 
 }
 
-function ShowMetadata(sampleId) {
-    console.log(`Calling ShowMetadata(${sampleId})`);
+function ShowMetadata(sampleId)
+ {
+    d3.json("samples.json").then(data => {
+        var result = data.metadata.filter(md => md.id == sampleId)[0];
+        var PANEL = d3.select("#sample-metadata");  
 
-}
+        PANEL.html("");
+        Object.entries(result).forEach(([key, value])=>{
+            PANEL
+                .append("h6")
+                .text(`${key.toUpperCase()}: ${value}`)
+        });
 
-function DrawGauge(sampleId)
-{
-    console.log(`Calling DrawGauge($(sampleId))`);
-
-
-}
-
-
+        DrawGauge(result.wfreq);
+   });
+ }
 
 function optionChanged(newSampleId) {
     console.log(`User selected ${newSampleId}`);
@@ -81,7 +111,7 @@ function InitDashboard()
 
         DrawBargraph(sampleId)
         DrawBubblechart(sampleId);
-        DrawGauge(saampleId);
+        DrawGauge(sampleId);
         ShowMetadata(sampleId);
         
     });
